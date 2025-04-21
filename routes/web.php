@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -101,3 +102,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
  Route::get('order/status/{id}', [OrderController::class, 'status_update'])->name('order.status');
  Route::get('user/status/{id}', [AdminUserController::class, 'status_update'])->name('user.status');
 Route::get('user/role/{id}', [AdminUserController::class, 'role_update'])->name('user.role');
+Route::get('/admin/orders/{order}/receipt', [OrderController::class, 'downloadReceipt'])->name('orders.receipt');

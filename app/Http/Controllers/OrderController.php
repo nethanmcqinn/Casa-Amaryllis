@@ -12,6 +12,7 @@ use App\Mail\OrderConfirmation;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -38,4 +39,12 @@ class OrderController extends Controller
             return Redirect()->back()->with('error', 'Failed to update order status');
         }
     }
+    public function downloadReceipt($orderId)
+{
+    $order = Order::with('items.product')->findOrFail($orderId);
+
+    $pdf = Pdf::loadView('pdf.receipt', compact('order'));
+
+    return $pdf->download('receipt_' . $order->id . '.pdf');
+}
 }

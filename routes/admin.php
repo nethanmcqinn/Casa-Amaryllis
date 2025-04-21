@@ -18,6 +18,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/reviews', [AdminController::class, 'reviews'])->name('admin.reviews.index');
     Route::delete('/reviews/{review}', [AdminController::class, 'deleteReview'])->name('admin.reviews.destroy');
     Route::get('/charts', [ChartController::class, 'index'])->name('admin.charts.index');
+    Route::post('/products/import', [ProductController::class, 'import'])->name('admin.products.import');
 
 }); 
 route::get('products_delete/{id}',[ProductController::class,'products_delete'])->name('products_delete');

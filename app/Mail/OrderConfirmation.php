@@ -20,7 +20,10 @@ class OrderConfirmation extends Mailable
 
     public function build()
     {
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.receipt', ['order' => $this->order]);
+        
         return $this->subject('Order Confirmation - Casa Amaryllis')
-                    ->view('emails.orders.confirmation');
+                    ->view('emails.orders.confirmation')
+                    ->attachData($pdf->output(), 'receipt_' . $this->order->id . '.pdf');
     }
 }

@@ -125,13 +125,13 @@ class AdminController extends Controller
        
     }
 
-    public function deleteReview(\App\Models\ProductReview $review)
+    public function deleteReview($id)
     {
-        try {
-            $review->delete();
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
+        Review::findOrFail($id)->delete();
+    
+        return redirect()
+            ->route('admin.reviews.index')
+            ->with('success','Review deleted successfully.');
     }
+    
 }

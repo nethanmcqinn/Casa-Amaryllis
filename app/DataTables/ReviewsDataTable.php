@@ -20,20 +20,30 @@ class ReviewsDataTable extends DataTable
      * @param QueryBuilder $query Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
-    {
-        return (new EloquentDataTable($query))
-        ->addColumn('action',function ($row){
-            return "<div class='action-group'>
-                                   <form action='" . route('admin.reviews.destroy', $row->id) . "' method='GET' class='d-inline'>
+{
+    return (new EloquentDataTable($query))
+        ->addColumn('action', function ($row) {
+            // build the HTML string with POST + CSRF + method spoofing
+            return "
+                <div class='action-group'>
+                    <form 
+                        action='" . route('admin.reviews.destroy', $row->id) . "' 
+                        method='POST' 
+                        class='d-inline' 
+                        onsubmit='return confirm(\"Are you sure you want to delete this review?\")'
+                    >
+                        " . csrf_field() . "
+                        <input type='hidden' name='_method' value='DELETE'>
                         <button class='btn btn-danger' type='submit'>
                             <i class='fa fa-trash'></i>
                         </button>
                     </form>
-            </div>";
+                </div>
+            ";
         })
         ->rawColumns(['action'])
         ->setRowId('id');
-    }
+}
 
     /**
      * Get the query source of dataTable.

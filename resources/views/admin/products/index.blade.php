@@ -27,13 +27,20 @@
     <div class="card-body">
         {{$dataTable->table()}}
     </div>
-</div>
+    </div>
+    <form action="{{ route('admin.products.import') }}" method="POST" enctype="multipart/form-data" class="mb-4">
+    @csrf
+    <label for="csv_file">Import Products via CSV:</label>
+    <input type="file" name="csv_file" required accept=".csv" class="form-control mt-2 mb-2" />
+    <button type="submit" class="btn btn-primary">Import</button>
+</form>
 
 
 
-@push('scripts')
+
+    @push('scripts')
     {{ $dataTable->scripts() }}
-@endpush 
+    @endpush 
    
 </div>
 @endsection

@@ -64,6 +64,12 @@ class ReviewController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $review = Review::findOrFail($id);
+    $review->delete();
+
+    // Redirect back to your reviews index with a success message
+    return redirect()
+        ->route('admin.reviews.index')
+        ->with('success', 'Review deleted successfully.');
     }
 }

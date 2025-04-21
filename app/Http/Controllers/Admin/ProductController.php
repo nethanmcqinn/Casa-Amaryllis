@@ -131,4 +131,42 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')->with('success', 'Product restored successfully');
     }
+    public function import(Request $request)
+{
+    $request->validate([
+        'csv_file' => 'required|mimes:csv,txt'
+    ]);
+
+    $path = $request->file('csv_file')->getRealPath();
+    $file = fopen($path, 'r');
+
+    $header = fgetcsv($file); // Read the header row
+    $successCount = 0;
+    $errorCount = 0;
+
+    while (($row = fgetcsv($file)) !== false) {
+        try {
+            // Map CSV columns based on your products table
+            [$name, $description, $price, $stock, $image, $category_id] = $row;
+
+            Product::create([
+                'name' => $name,
+                'description' => $description,
+                'price' => $price,
+                'stock' => $stock,
+                'image' => $image,
+                'category_id' => $category_id,
+            ]);
+
+            $successCount++;
+        } catch (\Exception $e) {
+            $errorCount++;
+        }
+    }
+
+    fclose($file);
+
+    return redirect()->route('admin.products.index')->with('success', "$successCount products imported, $errorCount failed.");
+}
+
 }
