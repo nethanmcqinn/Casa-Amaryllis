@@ -2,22 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Product;
 use App\Http\Controllers\Controller;
+use App\DataTables\ProductDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(ProductDataTable $dataTable)
     {
-        $products = \App\Models\Product::latest()->paginate(10);
-        return view('admin.products.index', compact('products'));
+        return $dataTable->render('admin.products.index');
     }
+    
+
+    public function show(){
+        return view('admin.products.create');
+  
+    }
+    
 
     public function create()
     {
-        return view('admin.products.create');
+        $show='show';
+        dd($show);
     }
 
     public function store(Request $request)
@@ -95,10 +104,31 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
     }
 
-    public function destroy(\App\Models\Product $product)
+    public function destroy($product)
     {
+        dd($product);
         Storage::disk('public')->delete($product->image);
         $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
+    }
+
+    public function products_delete($product)
+    {
+        //dd($product);
+        $del=Product::find($product);
+        if($del->delete($del)){ 
+            return redirect()->back()->with("success", "Item Deleted Successfully");
+        } else {
+            return redirect()->back()->with("error", "Failed to delete item");
+        }
+        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
+    }
+
+    public function restore($id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+        $product->restore();
+
+        return redirect()->route('admin.products.index')->with('success', 'Product restored successfully');
     }
 }

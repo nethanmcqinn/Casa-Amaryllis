@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class AdminUserController extends Controller
 {
@@ -64,8 +65,8 @@ class AdminUserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = User::findOrFail($id);
-        return view('admin.users.edit', compact('user'));
+        $users = User::findOrFail($id);
+        return view('admin.users.edit', compact('users'));
     }
 
     /**
@@ -73,33 +74,11 @@ class AdminUserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = User::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'role' => 'required|string|in:admin,user',
-            'password' => 'nullable|string|min:8|confirmed',
+        // dd($request->all());
+       DB::table('users')->where('id', $id)->update([
+            'name' => $request->name,
+            'email' => $request->email,
         ]);
-
-        $userData = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'role' => $validated['role'],
-        ];
-        
-        if (!empty($validated['password'])) {
-            $userData['password'] = Hash::make($validated['password']);
-        }
-
-        $user->update($userData);
-
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully!');
     }
@@ -132,6 +111,7 @@ class AdminUserController extends Controller
 
     public function status_update(Request $request)
     {
+      // dd($request->all());
         $user = User::find($request->id);
         $user->is_active = $request->status;
         $user->save();

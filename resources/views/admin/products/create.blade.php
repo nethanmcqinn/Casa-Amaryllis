@@ -1,5 +1,7 @@
 @extends('layouts.admin')
+<?php
 
+?>
 @section('content')
 <div class="container">
     <h1>Add New Product</h1>

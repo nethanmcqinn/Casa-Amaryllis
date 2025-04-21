@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Mail\OrderStatusUpdated;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Review;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\DataTables\ReviewsDataTable;
 
 class AdminController extends Controller
 {
@@ -115,12 +117,12 @@ class AdminController extends Controller
         }
     }
 
-    public function reviews()
+    public function reviews(ReviewsDataTable $dataTable)
     {
-        $reviews = \App\Models\ProductReview::with(['user', 'product'])
-            ->latest()
-            ->paginate(10);
-        return view('admin.reviews.index', compact('reviews'));
+        // Fetch reviews data using DataTable
+        // dd($dataTable);
+       return $dataTable->render('admin.reviews.index');
+       
     }
 
     public function deleteReview(\App\Models\ProductReview $review)

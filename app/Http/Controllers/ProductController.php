@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+
+
     public function show(Product $product)
     {
         $product->load(['reviews.user' => function($query) {
@@ -49,7 +51,8 @@ class ProductController extends Controller
     {
         $this->authorize('delete', $review);
         
-=        $review->delete();
+       $review->delete();
         return back()->with('success', 'Review deleted successfully!');
     }
+
 }
